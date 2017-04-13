@@ -18,25 +18,16 @@ processRequired = function(optionHash) {
   }
 }
 
-processId = function(optionsHash) {
+processAttribute = function(optionsHash, attributeName) {
   if (!optionsHash) {
     return
   }
-  if (optionsHash['id']) {
-    return " id='" + optionsHash['id'] + "'";
+  if (optionsHash.hasOwnProperty(attributeName) && optionsHash[attributeName]) {
+    return " " + attributeName + "='" + optionsHash[attributeName] + "'";
   } else {
     return ""
   }
-}
-
-processPlaceHolder = function(optionsHash) {
-  if (optionsHash['placeholder']) {
-    placeholder = " placeholder='" + optionsHash['placeholder'] + "' "
-  } else {
-    placeholder = ""
-  }
-  return placeholder
-}
+};
 
 processLabel = function(optionsHash, field) {
   if (_.isString(optionsHash['label'])) {
@@ -148,9 +139,10 @@ UI.registerHelper('text_field', function(field, options){
   if (value && type === "date" && value.constructor === Date) {
     value = value.getFullYear() + '-' + ('0' + (value.getMonth()+1)).slice(-2) + "-" + ('0' + value.getDate()).slice(-2)
   }
-  placeholder = processPlaceHolder(options.hash)
+  placeholder = processAttribute(options.hash, "placeholder");
+  autocomplete = processAttribute(options.hash, "autocomplete");
   required = processRequired(options.hash)
-  html = "<input type='"+ type +"' id='" + field + "' name='"+ field +"' value='"+ value +"' class='form-control"+ html_class +"'"+ placeholder + required + " >"
+  html = "<input type='"+ type +"' id='" + field + "' name='"+ field +"' value='"+ value +"' class='form-control"+ html_class +"'"+ placeholder + required + autocomplete + " >"
   label = buildLabel(options.hash, field)
   hint = buildHintBlock(options.hash)
   beforeAddon = buildBeforeAddon(options.hash)
@@ -270,7 +262,7 @@ UI.registerHelper('submit_button', function(text, options){
   }
   value = text || actionWord + klass;
   html_class = processClass(options.hash);
-  html_id = processId(options.hash);
+  html_id = processAttribute(options.hash, "id");
   if (options.hash && options.hash['button']) {
     html = "<button type='submit' class='btn btn-default"+ html_class + "'"+ html_id +">" + value + "</button>";
   } else {
