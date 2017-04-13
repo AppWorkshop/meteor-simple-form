@@ -2,7 +2,7 @@ Package.describe({
   summary: "A meteorite package that makes building dynamic two way forms easy",
   version: '0.2.3',
   name: "appworkshop:simple-form",
-  git: 'https://github.com/MeteorClub/simple-form'
+  git: 'https://github.com/AppWorkshop/simple-form'
 });
 
 Package.onUse(function(api) {
