@@ -1,3 +1,12 @@
+const { humanize, classify } = require("underscore.string");
+// It is still possible use underscore.string as a Underscore.js/Lo-Dash extension
+//
+// _.mixin(s.exports());
+//
+// But it's not recommended since include, contains, reverse and join are
+// dropped because they collide with the functions already defined by
+// Underscore.js.
+
 processClass = function(optionsHash) {
   if (!optionsHash) {
     return
@@ -33,7 +42,7 @@ processLabel = function(optionsHash, field) {
   if (_.isString(optionsHash['label'])) {
     label_words = optionsHash['label']
   } else {
-    label_words = _.humanize(field)
+    label_words = humanize(field)
   }
   return label_words
 }
@@ -85,7 +94,7 @@ processForBelongsTo = function(field, object) {
   }
   isAssociation = _.contains(_.pluck(window[name].belongs_to, 'name'), field)
   if (isAssociation) {
-    associations = window[_.classify(field)].all()
+    associations = window[classify(field)].all()
     var array = [];
     _.each(associations, function(association) {
       array.push({value: association._id, name: association.name})
@@ -103,7 +112,7 @@ processForHaBTM = function(field, object) {
   }
   isAssociation = _.contains(_.pluck(window[name].has_and_belongs_to_many, 'name'), field)
   if (isAssociation) {
-    associations = window[_.classify(_.singularize(field))].all()
+    associations = window[classify(_.singularize(field))].all()
     var array = [];
     _.each(associations, function(association) {
       array.push({value: association._id, name: association.name})
@@ -116,14 +125,7 @@ processForHaBTM = function(field, object) {
 
 buildAssociationCheckboxes = function(field, object, checkboxes, options) {
   return false
-  builtCheckboxes = _.map(checkboxes, function(checkbox) {
-    html_class = processClass(options.hash)
-    checked = _.contains(object[_.singularize(field) + '_ids'], checkbox.value) === true ? ' checked' : '';
-    label = processLabel(options.hash, checkbox.name)
-    html = "<label for='"+ checkbox.name +"'><input id='"+ checkbox.name +"' name='" + checkbox.name + "' type='hidden' value='false'><input name='" + checkbox.name + "' class='"+ html_class +"' type='checkbox' value='" + checkbox.value + "' " + checked + ">" + label + "</label>";
-    return html;
-  });
-  return new Spacebars.SafeString(builtCheckboxes.join(' '));
+  // NOTE: see git history for an implementation that was previously unreachable here
 }
 
 /*----- HELPERS ------*/
@@ -195,7 +197,7 @@ UI.registerHelper('select_box', function(field, options) {
   required = processRequired(options.hash)
   html_options = [];
   _.each(optionsValues, function(option) {
-    name = option.name || _.humanize(option)
+    name = option.name || humanize(option)
     value = option.value || option
     selected = _this[field] === value ? ' selected' : '';
     return html_options.push("<option value='" + value + "'" + selected + ">" + name + "</option>");

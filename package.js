@@ -1,13 +1,17 @@
 Package.describe({
   summary: "A meteorite package that makes building dynamic two way forms easy",
-  version: '0.2.3',
+  version: '0.2.4',
   name: "appworkshop:simple-form",
   git: 'https://github.com/AppWorkshop/simple-form'
 });
 
+Npm.depends({
+  "underscore.string": "3.3.6",
+  "underscore.inflection": "1.3.3",
+});
+
 Package.onUse(function(api) {
-  api.versionsFrom("METEOR@0.9.0");
-  api.use(['ui', 'templating', 'underscore', 'mrt:underscore-string-latest@2.3.3'], 'client');
+  api.use(['ecmascript', 'ui', 'templating', 'underscore'], 'client');
   api.addFiles(['fileField.html', 'fileField.js', 'helper.js', 'simpleform.js'], 'client');
   api.export('SimpleForm', 'client');
 });
